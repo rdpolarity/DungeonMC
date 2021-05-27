@@ -1,0 +1,41 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
+
+group = 'rdpolarity'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    compile "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
+    annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+}
+
+shadowJar {
+    relocate 'co.aikar.commands', 'rdpolarity.necrosis.acf'
+    relocate 'co.aikar.locales', 'rdpolarity.necrosis.locales'
+    destinationDirectory.set(file("C:\\Users\\rdpol\\IdeaProjects\\Servers\\servers\\1.16.5\\plugins"))
+}
+
+build { dependsOn shadowJar }

@@ -1,0 +1,7 @@
+name: Necrosis
+version: @version@
+main: rdpolarity.necrosis.Necrosis
+api-version: 1.16
+authors: [ RDPolarity ]
+description: A rogue-like dungeon crawler
+website: aydie.me
