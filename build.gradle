@@ -1,10 +1,11 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'kr.entree.spigradle' version '2.2.3'
     id 'java'
 }
 
 group = 'rdpolarity'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -12,11 +13,7 @@ targetCompatibility = '1.8'
 repositories {
     mavenCentral()
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
-    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
+    mavenLocal()
 }
 
 compileJava {
@@ -26,7 +23,7 @@ compileJava {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly spigotAll("1.16.5")
     compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
     compile "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
     annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
