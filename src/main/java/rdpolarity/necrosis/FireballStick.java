@@ -38,7 +38,7 @@ public class FireballStick implements Listener {
         net.minecraft.server.v1_16_R3.ItemStack itemNMS = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag = itemNMS.getTag() != null ? itemNMS.getTag() : null;
         if (tag != null) {
-            if (tag.getString("NecrosisData").equals(Constants.FIREBALL_ITEM)) return true;
+            return tag.getString("NecrosisData").equals(Constants.FIREBALL_ITEM);
         }
         return false;
     }

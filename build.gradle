@@ -16,11 +16,11 @@ repositories {
     mavenLocal()
 }
 
-compileJava {
-    options.compilerArgs += ["-parameters"]
-    options.fork = true
-    options.forkOptions.executable = 'javac'
-}
+//compileJava {
+//    options.compilerArgs += ["-parameters"]
+//    options.fork = true
+//    options.forkOptions.executable = 'javac'
+//}
 
 dependencies {
     compileOnly spigotAll("1.16.5")
