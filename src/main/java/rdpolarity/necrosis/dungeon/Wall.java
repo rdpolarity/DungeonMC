@@ -1,5 +1,5 @@
 package rdpolarity.necrosis.dungeon;
 
-public class Wall implements Cell {
+public class Wall extends Cell {
 
 }

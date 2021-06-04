@@ -13,18 +13,20 @@ targetCompatibility = '1.8'
 repositories {
     mavenCentral()
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+    maven { url = "https://maven.enginehub.org/repo/" }
     mavenLocal()
 }
 
-//compileJava {
-//    options.compilerArgs += ["-parameters"]
-//    options.fork = true
-//    options.forkOptions.executable = 'javac'
-//}
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
 
 dependencies {
     compileOnly spigotAll("1.16.5")
     compileOnly 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.5'
     compile "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
     annotationProcessor 'org.spigotmc:plugin-annotations:1.2.3-SNAPSHOT'
 }

@@ -21,19 +21,25 @@ public class NecrosisCommand extends BaseCommand {
         player.sendMessage("This is the necrosis command");
     }
 
-    @Default
     @Subcommand("new")
     public static void onNew(Player player) {
-        player.sendMessage("Creating new necrosis game!");
         DungeonBuilder dungeon = new DungeonBuilder();
-        dungeon.GeneratePreviewAt(player.getLocation(), 10, 50);
+        dungeon.GenerateAt(player.getLocation());
     }
 
-    @Subcommand("new")
-    public static void onNew(Player player, int size, int iterations) {
+    @Default
+    @Subcommand("preview")
+    public static void onPreview(Player player) {
         player.sendMessage("Creating new necrosis game!");
         DungeonBuilder dungeon = new DungeonBuilder();
-        dungeon.GeneratePreviewAt(player.getLocation(), size, iterations);
+        dungeon.GeneratePreviewAt(player.getLocation(), 10, 10, 3, 5);
+    }
+
+    @Subcommand("preview")
+    public static void onPreview(Player player, int size, int iterations, int turtles, int rooms) {
+        player.sendMessage("Creating new necrosis game!");
+        DungeonBuilder dungeon = new DungeonBuilder();
+        dungeon.GeneratePreviewAt(player.getLocation(), size, iterations, turtles, rooms);
     }
 
     @Subcommand("debug")

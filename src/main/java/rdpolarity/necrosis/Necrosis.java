@@ -17,6 +17,7 @@ public final class Necrosis extends JavaPlugin {
         BukkitCommandManager manager = new BukkitCommandManager(this);
         manager.registerCommand(new NecrosisCommand());
         getServer().getPluginManager().registerEvents(new FireballStick(), this);
+        this.saveDefaultConfig();
     }
 
     @Override
