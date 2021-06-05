@@ -10,11 +10,19 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import rdpolarity.necrosis.blenderstands.Blenderstand;
+import rdpolarity.necrosis.particles.ParticleManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FireballStick implements Listener {
+
+    Necrosis plugin;
+
+    public FireballStick(Necrosis plugin) {
+        this.plugin = plugin;
+    }
 
     public static void giveStick(Player player) {
         ItemStack stick = new ItemStack(Material.STICK);
@@ -47,13 +55,17 @@ public class FireballStick implements Listener {
     private void getRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-            if (isStick(player.getItemInHand())) {
+            if (isStick(player.getInventory().getItemInMainHand())) {
                 fire(player);
             }
         }
     }
 
     public void fire(Player player) {
-        player.sendMessage("FIRED!");
+        Blenderstand bs = new Blenderstand();
+        bs.Place(bs.Read("untitled"), player.getLocation());
+        player.sendMessage("FIRED!!!!");
+//        ParticleManager pm = new ParticleManager(plugin, player.getLocation());
+//        pm.Start(player.getLocation());
     }
 }

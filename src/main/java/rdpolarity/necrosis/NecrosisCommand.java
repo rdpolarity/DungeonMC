@@ -24,7 +24,7 @@ public class NecrosisCommand extends BaseCommand {
     @Subcommand("new")
     public static void onNew(Player player) {
         DungeonBuilder dungeon = new DungeonBuilder();
-        dungeon.GenerateAt(player.getLocation());
+        dungeon.GenerateAt(player);
     }
 
     @Default
@@ -40,6 +40,11 @@ public class NecrosisCommand extends BaseCommand {
         player.sendMessage("Creating new necrosis game!");
         DungeonBuilder dungeon = new DungeonBuilder();
         dungeon.GeneratePreviewAt(player.getLocation(), size, iterations, turtles, rooms);
+    }
+
+    @Subcommand("spawn")
+    public static void onSpawn(Player player) {
+
     }
 
     @Subcommand("debug")

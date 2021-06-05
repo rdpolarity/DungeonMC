@@ -4,6 +4,8 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
@@ -17,6 +19,7 @@ import com.sk89q.worldedit.world.DataException;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Range;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.util.Vector;
 import rdpolarity.necrosis.Necrosis;
@@ -130,9 +133,10 @@ public class DungeonBuilder {
             }
             return neighbours;
         }
+
     }
 
-    private Cell[][] GenerateFloor(int size, int iterations, int turtles) {
+    private Level GenerateFloor(int size, int iterations, int turtles) {
         Level floor = new Level(size);
         Vector start = new Vector(MathHelper.RandRange(0, size), MathHelper.RandRange(0, size), 0); // Randomize starting position
         floor.set(start, Room.As(Cell.Type.START));
@@ -173,19 +177,19 @@ public class DungeonBuilder {
             deadends.remove(chestroom);
         }
 
-        return floor.data;
+        return floor;
     }
 
-    private Cell[][] GenerateFloorWith(int size, int iterations, int turtles, int rooms) {
-        Cell[][] floor;
+    private Level GenerateFloorWith(int size, int iterations, int turtles, int rooms) {
+        Level floor;
         while (true) { // Ensure minimum room size
             int roomCount = 0;
             int bossCount = 0;
             floor = GenerateFloor(size, iterations, turtles);
-            for (int x = 0; x < floor[0].length; x++) {
-                for (int y = 0; y < floor.length; y++) {
-                    if (floor[x][y] instanceof Room) roomCount++;
-                    if (floor[x][y].type == Cell.Type.BOSS) bossCount++;
+            for (int x = 0; x < floor.data[0].length; x++) {
+                for (int y = 0; y < floor.data.length; y++) {
+                    if (floor.data[x][y] instanceof Room) roomCount++;
+                    if (floor.data[x][y].type == Cell.Type.BOSS) bossCount++;
                 }
             }
             if (roomCount > rooms && bossCount >= 1) {
@@ -195,13 +199,41 @@ public class DungeonBuilder {
         return floor;
     }
 
-    public void GenerateAt(Location loc) {
-        Cell[][] floor = GenerateFloorWith(10, 10, 3, 5);
-        File roomSchem = new File(Necrosis.getPlugin(Necrosis.class).getDataFolder() + File.separator + "/levels/room.schem");
+    public void GenerateAt(Player player) {
+        Level floor = GenerateFloorWith(10, 10, 3, 5);
+        Location loc = player.getLocation();
+        Location spawnLoc = player.getLocation();
+        player.sendMessage("Generating new level...");
+        for (int x = 0; x < floor.data.length; x++) {
+            for (int y = 0; y < floor.data.length; y++) {
+                Cell currentCell = floor.get(x, y);
+                if (floor.get(x, y) instanceof Room) {
+                    Location newLoc = player.getLocation();
+                    newLoc.add(x * 5, 0, y * 5);
+                    if (currentCell.type == Cell.Type.CHEST) {
+                        PasteRoom(newLoc, "chest");
+                    } else if (currentCell.type == Cell.Type.BOSS) {
+                        PasteRoom(newLoc, "boss");
+                    } else {
+                        PasteRoom(newLoc, "room");
+                        if (currentCell.type == Cell.Type.START) {
+                            spawnLoc = newLoc;
+                        }
+                    }
+                }
+            }
+        }
+        player.teleport(spawnLoc);
+        GeneratePreviewBlocks(floor.data, new Location(loc.getWorld(), loc.getX(), loc.getY() + 10, loc.getZ()));
+        player.sendMessage("Level complete!");
+    }
+
+    private void PasteRoom(Location loc, String name) {
+        File roomSchem = new File(Necrosis.getPlugin(Necrosis.class).getDataFolder() + File.separator + "/levels/" + name + ".schem");
         ClipboardFormat format = ClipboardFormats.findByFile(roomSchem);
         try (ClipboardReader reader = format.getReader(new FileInputStream(roomSchem));) {
             Clipboard clipboard = reader.read();
-            try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder().build()) {
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(new BukkitWorld(loc.getWorld()))) {
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
                         .to(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()))
@@ -211,18 +243,17 @@ public class DungeonBuilder {
             } catch (WorldEditException e) {
                 e.printStackTrace();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
-
     public void GeneratePreviewAt(Location loc, int size, int iterations, int turtles, int rooms) {
-        Cell[][] floor = GenerateFloorWith(size, iterations, turtles, rooms);
+        Cell[][] floor = GenerateFloorWith(size, iterations, turtles, rooms).data;
+        GeneratePreviewBlocks(floor, loc);
+    }
+
+    public void GeneratePreviewBlocks(Cell[][] floor, Location loc) {
 
         // Create Outline
         int extend = 1;
