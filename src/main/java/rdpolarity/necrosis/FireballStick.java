@@ -10,8 +10,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import rdpolarity.necrosis.blenderstands.Blenderstand;
-import rdpolarity.necrosis.particles.ParticleManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +60,6 @@ public class FireballStick implements Listener {
     }
 
     public void fire(Player player) {
-        Blenderstand bs = new Blenderstand();
-        bs.Place(bs.Read("untitled"), player.getLocation());
         player.sendMessage("FIRED!!!!");
 //        ParticleManager pm = new ParticleManager(plugin, player.getLocation());
 //        pm.Start(player.getLocation());
